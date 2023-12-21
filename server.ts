@@ -4,8 +4,6 @@ import express from 'express';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import bootstrap from './src/main.server';
-import { Request, Response } from 'express-serve-static-core';
-import { ParsedQs } from 'qs';
 const crypto = require('./crypto-js.min.js');
 const bodyParser = require('body-parser');
 
@@ -28,6 +26,7 @@ export function app(): express.Express {
     maxAge: '1y'
   }));
 
+  // Simple api for testing purpose, it will be removed in future
   server.get('/api/me', (req: any, res: any) => {
     const func = req.params[0];
     let r = 'wrong endpoint';
@@ -39,6 +38,14 @@ export function app(): express.Express {
     }
     res.status(200).json({ r });
   });
+
+  const me = () => {
+    return 'some data from "me" endpoint';
+  };
+  
+  const you = () => {
+    return 'some data from "you" endpoint';
+  };
 
   server.post('/api/search', bodyParser.json(), async (req, res) => {
     console.log('POST /api/search => ', req.body.searchTerms);
@@ -80,16 +87,6 @@ export function app(): express.Express {
       console.error(error);
     }
   }
-
-
-  
-  const me = () => {
-    return 'some data from "me" endpoint';
-  };
-  
-  const you = () => {
-    return 'some data from "you" endpoint';
-  };
 
   // All regular routes use the Angular engine
   server.get('*', (req, res, next) => {
